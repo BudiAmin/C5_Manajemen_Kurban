@@ -195,7 +195,7 @@
             </div>
             <div class="footer-bottom">
                 <p>© 2024 Manajemen Kurban. Hak cipta dilindungi.</p>
-                <p>Dibuat dengan ❤️ untuk umat</p>
+                <p>Dibuat dengan ❤️ setulus hati untuk umat</p>
             </div>
         </div>
     </footer>
