@@ -18,6 +18,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Kurban registration
+use App\Http\Controllers\KurbanRegistrationController;
+
+Route::get('/daftar-kurban', [KurbanRegistrationController::class, 'create'])->name('kurban.create');
+Route::post('/daftar-kurban', [KurbanRegistrationController::class, 'store'])->name('kurban.store');
+Route::get('/daftar-kurban/lanjut', [KurbanRegistrationController::class, 'next'])->name('kurban.next');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -28,4 +35,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
