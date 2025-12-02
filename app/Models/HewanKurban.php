@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class HewanKurban extends Model
 {
@@ -12,9 +11,9 @@ class HewanKurban extends Model
 
     protected $fillable = [
         'ID_Jadwal',
+        'ID_User',
         'Jenis_Hewan',
-        'Status_Hewan',
-        'ID_User'
+        'Status_Hewan'
     ];
 
     public function jadwal()
@@ -27,7 +26,7 @@ class HewanKurban extends Model
         return $this->belongsTo(User::class, 'ID_User', 'id');
     }
 
-    public function distribusi()
+    public function distribusiDaging()
     {
         return $this->hasMany(DistribusiDaging::class, 'ID_Hewan', 'ID_Hewan');
     }

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController; // Tambahkan ini
+use App\Http\Controllers\KurbanRegistrationController; // Asumsi ini ada
 
 /*
 |--------------------------------------------------------------------------
@@ -18,16 +20,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Kurban registration
-use App\Http\Controllers\KurbanRegistrationController;
-
+// Rute Kurban registration
 Route::get('/daftar-kurban', [KurbanRegistrationController::class, 'create'])->name('kurban.create');
 Route::post('/daftar-kurban', [KurbanRegistrationController::class, 'store'])->name('kurban.store');
 Route::get('/daftar-kurban/lanjut', [KurbanRegistrationController::class, 'next'])->name('kurban.next');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Ganti rute dashboard
+Route::get('/dashboard', [DashboardController::class, 'index']) // Gunakan DashboardController
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

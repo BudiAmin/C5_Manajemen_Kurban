@@ -8,6 +8,14 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Kosongkan agar tidak ada data yang dibuat
+        $this->call([
+            UsersSeeder::class,
+            DanaDKMSeeder::class,
+            DanaOperasionalSeeder::class,
+            JadwalPenyembelihSeeder::class,
+            HewanKurbanSeeder::class,
+            PenerimaKurbanSeeder::class,
+            DistribusiDagingSeeder::class,
+        ]);
     }
 }

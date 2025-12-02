@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class PenerimaKurban extends Model
 {
@@ -12,17 +11,11 @@ class PenerimaKurban extends Model
 
     protected $fillable = [
         'Nama',
-        'Tempat_Tinggal',
-        'Tanggal_Terima',
-        'ID_User'
+        'Jumlah_Keluarga',
+        'Tempat_Tinggal'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'ID_User', 'id');
-    }
-
-    public function distribusi()
+    public function distribusiDaging()
     {
         return $this->hasMany(DistribusiDaging::class, 'ID_Penerima', 'ID_Penerima');
     }
