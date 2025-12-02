@@ -18,9 +18,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Rute Kurban registration
+Route::get('/daftar-kurban', [KurbanRegistrationController::class, 'create'])->name('kurban.create');
+Route::post('/daftar-kurban', [KurbanRegistrationController::class, 'store'])->name('kurban.store');
+Route::get('/daftar-kurban/lanjut', [KurbanRegistrationController::class, 'next'])->name('kurban.next');
+
+// Ganti rute dashboard
+Route::get('/dashboard', [DashboardController::class, 'index']) // Gunakan DashboardController
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
