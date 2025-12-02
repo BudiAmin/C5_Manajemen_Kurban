@@ -12,18 +12,20 @@ class DistribusiDaging extends Model
     protected $fillable = [
         'ID_Hewan',
         'ID_Penerima',
-        'Tanggal_Distribusi',
         'Penerima',
-        'Dokumentasi',
-        'Status_Distribusi'
+        'Status_Distribusi',
+        'Tanggal_Distribusi',
+        'Dokumentasi'
     ];
 
-    public function hewan()
+    // RELASI KE HEWAN KURBAN
+    public function hewanKurban()
     {
         return $this->belongsTo(HewanKurban::class, 'ID_Hewan', 'ID_Hewan');
     }
 
-    public function penerima()
+    // RELASI KE PENERIMA
+    public function penerimaKurban()
     {
         return $this->belongsTo(PenerimaKurban::class, 'ID_Penerima', 'ID_Penerima');
     }
