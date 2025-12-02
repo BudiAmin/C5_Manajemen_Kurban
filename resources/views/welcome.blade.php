@@ -62,6 +62,8 @@
             <a href="#hewan">Hewan Kurban</a>
             <a href="#peserta">Peserta</a>
             <a href="#distribusi">Distribusi</a>
+            <a href="{{ route('login') }}">Masuk</a>
+            <a href="{{ route('register') }}">Daftar</a>
         </nav>
     </header>
 
