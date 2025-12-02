@@ -17,169 +17,159 @@
             .muted { color: var(--muted-foreground); font-size: 0.95rem; }
             .stack { display: grid; gap: 1rem; }
             .actions { display:flex; gap:0.5rem; flex-wrap:wrap; }
+            .table-responsive { overflow-x: auto; }
         </style>
     </head>
 
     <body>
         <main class="container" style="padding:2.5rem 1rem;">
             <h1 class="section-title">Dashboard Pengguna</h1>
-            <p class="muted" style="margin-bottom:1rem;">Halaman demo UI — tombol belum berfungsi sebelum terhubung ke backend.</p>
+            <p class="muted" style="margin-bottom:1rem;">Halaman ini menampilkan data kurban yang terhubung ke database.</p>
 
             <div class="dashboard-grid">
-                <!-- Sidebar -->
                 <aside>
-                    <div class="card form-card stack">
+                    <div class="card form-card stack" style="margin-bottom:1.25rem;">
                         <div>
                             <h3 class="form-title">Pendaftaran Kurban</h3>
-                            <p class="muted">Isi formulir singkat untuk mendaftar.</p>
+                            <p class="muted">Pilih hewan kurban Anda dari daftar yang tersedia.</p>
                         </div>
 
-                        <form method="POST" action="#" enctype="multipart/form-data" class="stack">
+                        <form method="POST" action="{{ route('kurban.store') }}" class="stack">
                             @csrf
                             <div class="form-group">
-                                <label>Jenis Hewan</label>
-                                <select class="input">
-                                    <option>Sapi</option>
-                                    <option>Kambing</option>
-                                    <option>Domba</option>
+                                <label for="jenis_hewan">Pilih Hewan Kurban</label>
+                                <select class="input" id="jenis_hewan" name="ID_Hewan">
+                                    @forelse ($pilihanKurban as $pilihan)
+                                        <option value="{{ $pilihan->ID_Hewan }}">
+                                            {{ $pilihan->Jenis_Hewan }} 
+                                            {{-- Kolom harga/deskripsi tidak ada, hanya tampilkan Jenis_Hewan --}}
+                                        </option>
+                                    @empty
+                                        <option disabled>Hewan kurban tidak tersedia saat ini.</option>
+                                    @endforelse
                                 </select>
+                                @if ($pilihanKurban->isEmpty())
+                                    <p class="muted" style="margin-top:0.5rem; color: var(--color-red);">Tidak ada hewan yang bisa didaftarkan.</p>
+                                @endif
                             </div>
 
                             <div class="form-group">
                                 <label>Jumlah / Patungan</label>
-                                <input class="input" type="number" min="1" value="1">
+                                <input class="input" type="number" min="1" value="1" name="jumlah_patungan">
                             </div>
 
                             <div class="form-group">
                                 <label>Menitip Bayar</label>
-                                <select class="input">
+                                <select class="input" name="titip_bayar">
                                     <option value="tidak">Tidak</option>
                                     <option value="ya">Ya (Rp 200.000)</option>
                                 </select>
                             </div>
 
                             <div class="actions">
-                                <button type="button" class="btn btn-gold">Daftar Sekarang</button>
+                                <button type="submit" class="btn btn-gold" @if($pilihanKurban->isEmpty()) disabled @endif>Daftar Sekarang</button>
                                 <button type="reset" class="btn btn-outline">Reset</button>
                             </div>
                         </form>
                     </div>
+
+                    <div class="card form-card">
+                        <h3 class="form-title">Daftar Penerima Kurban</h3>
+                        <p class="muted">Nama-nama yang akan menerima distribusi daging kurban.</p>
+                        
+                        <div class="stack" style="margin-top:0.75rem;">
+                            @forelse ($penerimaKurbans as $penerima)
+                            <div style="border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                                <strong>{{ $penerima->Nama }}</strong>
+                                <p class="muted">{{ $penerima->Tempat_Tinggal }}</p>
+                            </div>
+                            @empty
+                                <p class="muted">Belum ada daftar penerima kurban yang terverifikasi.</p>
+                            @endforelse
+                        </div>
+                    </div>
                 </aside>
 
-                <!-- Main content -->
                 <section>
-                    <!-- Riwayat Pendaftaran -->
                     <div class="table-card" style="margin-bottom:1rem;">
                         <div style="padding:1rem 1.25rem;">
-                            <h3 class="form-title">Riwayat Pendaftaran Kurban</h3>
-                            <p class="muted">Lihat status pendaftaran Anda.</p>
+                            <h3 class="form-title">Jadwal Penyembelihan Kurban</h3>
+                            <p class="muted">Informasi tanggal, waktu, dan lokasi penyembelihan.</p>
                         </div>
 
-                        <div style="padding:0 1.25rem 1.25rem;">
+                        <div class="table-responsive" style="padding:0 1.25rem 1.25rem;">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Jenis Hewan</th>
-                                        <th>Jumlah/Patungan</th>
-                                        <th>Status</th>
-                                        <th class="hide-mobile">Aksi</th>
+                                        <th>Tanggal & Waktu</th>
+                                        <th>Penyembelih</th>
+                                        <th>Lokasi</th>
+                                        <th class="hide-mobile">ID Operasional</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
+                                    @forelse ($jadwalPenyembelihans as $jadwal)
                                     <tr>
-                                        <td>1</td>
-                                        <td>Sapi</td>
-                                        <td>1 (patungan 5)</td>
-                                        <td><span class="badge badge-muted">Pending</span></td>
-                                        <td class="hide-mobile"><button class="btn btn-outline">Detail</button></td>
+                                        <td>{{ \Carbon\Carbon::parse($jadwal->Waktu_Penyembelih)->format('d M Y H:i') }}</td>
+                                        <td>{{ $jadwal->Nama_Penyembelih }}</td>
+                                        <td>{{ $jadwal->Lokasi_Penyembelih }}</td>
+                                        <td class="hide-mobile">{{ $jadwal->ID_Operasional }}</td>
                                     </tr>
-
+                                    @empty
                                     <tr>
-                                        <td>2</td>
-                                        <td>Kambing</td>
-                                        <td>1</td>
-                                        <td><span class="badge badge-success">Diterima</span></td>
-                                        <td class="hide-mobile"><button class="btn btn-outline">Detail</button></td>
+                                        <td colspan="4" style="text-align: center; padding: 1rem;">Jadwal penyembelihan belum ditetapkan.</td>
                                     </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                    
+                    <div class="table-card" style="margin-bottom:1rem;">
+                        <div style="padding:1rem 1.25rem;">
+                            <h3 class="form-title">Riwayat Distribusi Daging</h3>
+                            <p class="muted">Catatan distribusi daging kurban yang telah dilakukan.</p>
+                        </div>
 
-                    <!-- Upload Bukti -->
-                    <div class="card form-card" style="margin-bottom:1rem;">
-                        <h3 class="form-title">Pembayaran / Upload Bukti Transfer</h3>
-                        <p class="muted">Upload bukti untuk diverifikasi.</p>
+                        <div class="table-responsive" style="padding:0 1.25rem 1.25rem;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Hewan Asal</th>
+                                        <th>Penerima</th>
+                                        <th class="hide-mobile">Status</th>
+                                    </tr>
+                                </thead>
 
-                        <form class="stack" style="margin-top:0.75rem;">
-                            @csrf
-                            <div class="form-group">
-                                <label>Pilih Pendaftaran</label>
-                                <select class="input">
-                                    <option value="1">#1 — Sapi (Pending)</option>
-                                    <option value="2">#2 — Kambing (Diterima)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Upload Bukti</label>
-                                <input class="input" type="file">
-                            </div>
-
-                            <div class="actions">
-                                <button type="button" class="btn btn-gold">Upload</button>
-                                <button type="button" class="btn btn-outline">Batalkan</button>
-                            </div>
-
-                            <div class="muted">Status Pembayaran: <strong>#1</strong> — Menunggu verifikasi</div>
-                        </form>
-                    </div>
-
-                    <!-- Jadwal -->
-                    <div class="card form-card" style="margin-bottom:1rem;">
-                        <h3 class="form-title">Jadwal & Notifikasi</h3>
-
-                        <div class="stack" style="margin-top:0.5rem;">
-                            <div>
-                                <strong>Jadwal Penyembelihan</strong>
-                                <p class="muted">30 Jun 2026 — Lapangan Masjid Al-Ikhlas</p>
-                                <ul class="muted">
-                                    <li>• 09:00 — Sapi</li>
-                                    <li>• 13:00 — Kambing / Domba</li>
-                                </ul>
-                            </div>
-
-                            <div>
-                                <strong>Notifikasi Status</strong>
-                                <ul class="muted">
-                                    <li>✔ Terdaftar — #2</li>
-                                    <li>✔ Terverifikasi — #2</li>
-                                    <li>✔ Hewan siap sembelihan — #2</li>
-                                    <li>⏳ Menunggu verifikasi pembayaran — #1</li>
-                                </ul>
-                            </div>
+                                <tbody>
+                                    @forelse ($distribusiDaging as $distribusi)
+                                    <tr>
+                                        <td>{{ \Carbon\Carbon::parse($distribusi->Tanggal_Distribusi)->format('d M Y') }}</td>
+                                        <td>{{ $distribusi->hewanKurban->Jenis_Hewan ?? 'N/A' }}</td>
+                                        <td>{{ $distribusi->penerimaKurban->Nama ?? $distribusi->Penerima }}</td>
+                                        <td class="hide-mobile">{{ $distribusi->Status_Distribusi }}</td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 1rem;">Belum ada riwayat distribusi daging.</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
-                    <!-- Distribusi -->
+                    
                     <div class="card form-card">
-                        <h3 class="form-title">Distribusi & Dokumentasi</h3>
-
+                        <h3 class="form-title">Notifikasi Penting</h3>
+                        <p class="muted">Informasi umum terkait status kurban Anda.</p>
                         <div class="stack" style="margin-top:0.5rem;">
-                            <div>
-                                <strong>Distribusi</strong>
-                                <p class="muted">#2 — Siap diambil (24 Jul 2026)</p>
-                            </div>
-
-                            <div>
-                                <strong>Download</strong>
-                                <div class="actions" style="margin-top:0.5rem;">
-                                    <a class="btn btn-secondary" href="#">Unduh Sertifikat</a>
-                                    <a class="btn btn-outline" href="#">Unduh Dokumentasi</a>
-                                </div>
-                            </div>
+                            <ul class="muted">
+                                <li>⏳ Status pembayaran kurban Anda sedang diverifikasi.</li>
+                                <li>✔ Hewan kurban Kambing telah siap untuk disembelih.</li>
+                                <li>ℹ️ Mohon cek jadwal penyembelihan di tabel di atas.</li>
+                            </ul>
                         </div>
                     </div>
                 </section>
