@@ -26,11 +26,20 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $user = Auth::user();
+
+        // Jika admin → redirect ke Filament Admin Panel
+        if ($user->role === 'admin_kurban') {
+            return redirect('/admin');
+        }
+
+        // Selain admin → redirect ke dashboard Breeze
+        return redirect('/dashboard');
     }
+
+
 
     /**
      * Destroy an authenticated session.
