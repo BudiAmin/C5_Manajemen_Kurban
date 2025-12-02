@@ -25,11 +25,6 @@ Route::get('/daftar-kurban', [KurbanRegistrationController::class, 'create'])->n
 Route::post('/daftar-kurban', [KurbanRegistrationController::class, 'store'])->name('kurban.store');
 Route::get('/daftar-kurban/lanjut', [KurbanRegistrationController::class, 'next'])->name('kurban.next');
 
-// User dashboard (static UI - no login required)
-Route::get('/user-dashboard', function () {
-    return view('user_dashboard');
-})->name('user.dashboard');
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
