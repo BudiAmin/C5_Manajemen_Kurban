@@ -22,6 +22,12 @@ return new class extends Migration
                 ->references('ID_Jadwal')
                 ->on('jadwal_penyembelih')
                 ->onDelete('cascade');
+            
+            // PENAMBAHAN: Foreign Key ke tabel users
+            $table->foreign('ID_User')
+                ->references('ID_User')
+                ->on('users')
+                ->onDelete('set null'); // ID_User nullable, jadi 'set null' adalah pilihan yang aman.
         });
     }
 

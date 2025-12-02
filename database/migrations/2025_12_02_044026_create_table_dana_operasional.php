@@ -24,6 +24,12 @@ return new class extends Migration
                 ->references('ID_DKM')
                 ->on('dana_dkm')
                 ->onDelete('set null');
+            
+            // PENAMBAHAN: Foreign Key ke tabel users
+            $table->foreign('ID_User')
+                ->references('ID_User')
+                ->on('users')
+                ->onDelete('set null'); // ID_User nullable, jadi 'set null' adalah pilihan yang aman.
         });
     }
 

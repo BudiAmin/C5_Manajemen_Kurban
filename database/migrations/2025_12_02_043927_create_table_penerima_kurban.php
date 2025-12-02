@@ -15,6 +15,12 @@ return new class extends Migration
             $table->date('Tanggal_Terima')->nullable();
             $table->unsignedBigInteger('ID_User')->nullable();
             $table->timestamps();
+            
+            // PENAMBAHAN: Foreign Key ke tabel users
+            $table->foreign('ID_User')
+                ->references('ID_User')
+                ->on('users')
+                ->onDelete('set null'); // ID_User nullable, jadi 'set null' adalah pilihan yang aman.
         });
     }
 
