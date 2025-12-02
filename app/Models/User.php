@@ -11,6 +11,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $primaryKey = 'ID_User';
     protected $fillable = [
         'name',
         'email',
@@ -29,4 +30,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        return $this->role === 'admin';
+    }
 }
