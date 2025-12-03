@@ -76,4 +76,32 @@ class DashboardController extends Controller
             'hewanKurban' => $hewanKurban,
         ]);
     }
+
+    
+        // bayar kurban
+    public function updateBukti(Request $request, $id)
+    {
+        $request->validate([
+            'Bukti_Bayar' => 'required|image|max:2048',
+        ]);
+
+        $hewan = HewanKurban::where('ID_Hewan', $id)
+            ->where('ID_User', Auth::id()) // pastikan milik user login
+            ->firstOrFail();
+
+        if ($request->hasFile('Bukti_Bayar')) {
+            $file = $request->file('Bukti_Bayar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/pembayaran', $filename);
+
+            $hewan->Bukti_Bayar = $filename;
+
+            // Set status otomatis
+            $hewan->Status = 'Menunggu Verifikasi';
+
+            $hewan->save();
+        }
+
+        return back()->with('success', 'Bukti pembayaran berhasil diupload dan status diubah menjadi Menunggu Verifikasi.');
+    }
 }

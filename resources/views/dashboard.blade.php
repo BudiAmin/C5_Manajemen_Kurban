@@ -192,7 +192,7 @@
                         </div>
                     </div>
 
-                    
+
                     {{-- riwayat pembelian / hewan --}}
                     <div class="table-card" style="margin-bottom:1rem;">
                         <div style="padding:1rem 1.25rem;">
@@ -225,13 +225,13 @@
                                             <td>{{ $row->Total_Hewan ?? '-' }}</td>
 
                                             <td>{{ $row->Total_Harga ?? '-' }}</td>
-                                            
+
                                             <td>{{ $row->Status ?? '-' }}</td>
 
                                             <td>
                                                 @if ($row->Bukti_Bayar)
-                                                    <img src="{{ asset('storage/' . $row->dokumentasi_penyembelihan) }}"
-                                                        alt="Foto penyembelihan"
+                                                    <img src="{{ asset('storage/pembayaran/' . $row->Bukti_Bayar) }}"
+                                                        alt="Bukti Pembayaran"
                                                         style="width: 120px; border-radius: 8px;">
                                                 @else
                                                     <span class="text-muted">Belum ada foto</span>
@@ -300,6 +300,7 @@
                         </div>
                     </div>
 
+                    {{-- riwayat distribusi daging --}}
                     <div class="table-card" style="margin-bottom:1rem;">
                         <div style="padding:1rem 1.25rem;">
                             <h3 class="form-title">Riwayat Distribusi Daging</h3>
@@ -336,6 +337,76 @@
                             </table>
                         </div>
                     </div>
+
+                    {{-- Pembayaran --}}
+                    {{-- Cek apakah ada minimal satu hewan dengan status Pending --}}
+                    @if ($detailPembayaran->contains('Status', 'Pending'))
+                        <div class="table-card" style="margin-bottom:1rem;">
+                            <div style="padding:1rem 1.25rem;">
+                                <h3 class="form-title">Status Pembayaran</h3>
+                                <p class="muted">Informasi tanggal, waktu, dan lokasi penyembelihan.</p>
+                            </div>
+
+                            <div class="table-responsive" style="padding:0 1.25rem 1.25rem;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Donatur</th>
+                                            <th>Jenis Hewan</th>
+                                            <th>Total Hewan</th>
+                                            <th>Total Harga</th>
+                                            <th>Status</th>
+                                            <th>Bukti Pembayaran</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @forelse ($detailPembayaran as $row)
+                                            <tr>
+                                                <td>{{ $row->user->name ?? '-' }}</td>
+                                                <td>{{ $row->detail->ketersediaan->Jenis_Hewan ?? '-' }}</td>
+                                                <td>{{ $row->Total_Hewan ?? '-' }}</td>
+                                                <td>{{ $row->Total_Harga ?? '-' }}</td>
+                                                <td>{{ $row->Status ?? '-' }}</td>
+
+                                                <td>
+                                                    @if ($row->Bukti_Bayar)
+                                                        {{-- Tampilkan gambar saja --}}
+                                                        <div>
+                                                            <img src="{{ asset('storage/' . $row->Bukti_Bayar) }}"
+                                                                alt="Bukti Pembayaran"
+                                                                style="width: 120px; border-radius: 8px;">
+                                                        </div>
+                                                    @else
+                                                        {{-- Form upload --}}
+                                                        <form
+                                                            action="{{ route('hewan_kurban.update_bukti', $row->ID_Hewan) }}"
+                                                            method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="file" name="Bukti_Bayar" accept="image/*"
+                                                                required>
+                                                            <button type="submit"
+                                                                style="margin-top:0.5rem;">Upload</button>
+                                                        </form>
+                                                    @endif
+                                                </td>
+
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted">
+                                                    Tidak ada data pembayaran untuk hewan Anda.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @endif
+
+
 
                     <div class="card form-card">
                         <h3 class="form-title">Notifikasi Penting</h3>

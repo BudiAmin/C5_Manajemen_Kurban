@@ -40,11 +40,10 @@ class PenyembelihanResource extends Resource
                 //     ->label('Pemilik Hewan')
                 //     ->default('-'),
 
-                // Di Form Field
                 Select::make('id_hewan')
                     ->label('Hewan (Nama Pemilik)')
                     ->options(function () {
-                        return HewanKurban::with('user') // eager load user
+                        return HewanKurban::with('user') 
                             ->get()
                             ->pluck('user.name', 'ID_Hewan');
                     })
@@ -81,7 +80,7 @@ class PenyembelihanResource extends Resource
         return $table
             ->columns([
 
-                TextColumn::make('hewan.Jenis_Hewan')
+                TextColumn::make('hewan.detail.ketersediaan.Jenis_Hewan')
                     ->label('Jenis Hewan')
                     ->sortable()
                     ->searchable(),
