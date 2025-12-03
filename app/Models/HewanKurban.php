@@ -15,7 +15,9 @@ class HewanKurban extends Model
         'ID_User',
         'Titip_bayar',
         'Total_Hewan',
-        'Total_Harga'
+        'Total_Harga',
+        'Status',
+        'Bukti_Pembayaran'
 
     ];
 
@@ -28,6 +30,11 @@ class HewanKurban extends Model
     {
 
         return $this->belongsTo(User::class, 'ID_User', 'ID_User');
+    }
+    
+    public function detail()
+    {
+        return $this->belongsTo(Detail::class, 'ID_Detail', 'id');
     }
 
     public function distribusiDaging()

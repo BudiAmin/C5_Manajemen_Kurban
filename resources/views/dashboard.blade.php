@@ -68,6 +68,8 @@
 
             <div class="dashboard-grid">
                 <aside>
+
+                    {{-- form tambah peserta --}}
                     <div class="card form-card stack" style="margin-bottom:1.25rem;">
                         <div>
                             <h3 class="form-title">Pendaftaran Kurban</h3>
@@ -121,13 +123,13 @@
                             </div>
 
                             <div class="actions">
-                                <button type="submit" class="btn btn-gold"
-                                    >Daftar Sekarang</button>
+                                <button type="submit" class="btn btn-gold">Daftar Sekarang</button>
                                 <button type="reset" class="btn btn-outline">Reset</button>
                             </div>
                         </form>
                     </div>
 
+                    {{-- penerima kurban --}}
                     <div class="card form-card">
                         <h3 class="form-title">Daftar Penerima Kurban</h3>
                         <p class="muted">Nama-nama yang akan menerima distribusi daging kurban.</p>
@@ -147,6 +149,8 @@
                 </aside>
 
                 <section>
+
+                    {{-- pelaksaan kurban --}}
                     <div class="table-card" style="margin-bottom:1rem;">
                         <div style="padding:1rem 1.25rem;">
                             <h3 class="form-title">Jadwal Pelaksanaan Kurban</h3>
@@ -188,6 +192,65 @@
                         </div>
                     </div>
 
+                    
+                    {{-- riwayat pembelian / hewan --}}
+                    <div class="table-card" style="margin-bottom:1rem;">
+                        <div style="padding:1rem 1.25rem;">
+                            <h3 class="form-title">Status Pembayaran</h3>
+                            <p class="muted">Informasi tanggal, waktu, dan lokasi penyembelihan.</p>
+                        </div>
+
+                        <div class="table-responsive" style="padding:0 1.25rem 1.25rem;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nama Donatur</th>
+                                        <th>Jenis Hewan</th>
+                                        <th>Total Hewan</th>
+                                        <th>Total Harga</th>
+                                        <th>Status</th>
+                                        <th>Bukti Pembayaran</th>
+                                        {{-- <th class="hide-mobile">ID Operasional</th> --}}
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @forelse ($detailPembayaran as $row)
+                                        <tr>
+                                            <td>{{ $row->user->name ?? '-' }}</td>
+
+                                            <td>{{ $row->detail->ketersediaan->Jenis_Hewan ?? '-' }}</td>
+
+
+                                            <td>{{ $row->Total_Hewan ?? '-' }}</td>
+
+                                            <td>{{ $row->Total_Harga ?? '-' }}</td>
+                                            
+                                            <td>{{ $row->Status ?? '-' }}</td>
+
+                                            <td>
+                                                @if ($row->Bukti_Bayar)
+                                                    <img src="{{ asset('storage/' . $row->dokumentasi_penyembelihan) }}"
+                                                        alt="Foto penyembelihan"
+                                                        style="width: 120px; border-radius: 8px;">
+                                                @else
+                                                    <span class="text-muted">Belum ada foto</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">
+                                                Tidak ada data penyembelihan untuk hewan Anda.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {{-- dokumentasi penyembelihan --}}
                     <div class="table-card" style="margin-bottom:1rem;">
                         <div style="padding:1rem 1.25rem;">
                             <h3 class="form-title">Dokumentasi Penyembelihan</h3>
@@ -203,88 +266,89 @@
                                         <th>Status Hewan</th>
                                         <th>Dokumentasi</th>
                                         {{-- <th class="hide-mobile">ID Operasional</th> --}}
-                     </tr>
-                    </thead>
+                                    </tr>
+                                </thead>
 
-                    <tbody>
-                        @forelse ($penyembelihan as $row)
-                            <tr>
-                                <td>{{ $row->hewan->user->name ?? '-' }}</td>
+                                <tbody>
+                                    @forelse ($penyembelihan as $row)
+                                        <tr>
+                                            <td>{{ $row->hewan->user->name ?? '-' }}</td>
 
-                                <td>{{ $row->hewan->Jenis_Hewan ?? '-' }}</td>
+                                            <td>{{ $row->hewan->Jenis_Hewan ?? '-' }}</td>
 
-                                <td>{{ $row->hewan->Status_Hewan ?? '-' }}</td>
+                                            <td>{{ $row->hewan->Status_Hewan ?? '-' }}</td>
 
-                                <td>
-                                    @if ($row->dokumentasi_penyembelihan)
-                                        <img src="{{ asset('storage/' . $row->dokumentasi_penyembelihan) }}"
-                                            alt="Foto penyembelihan" style="width: 120px; border-radius: 8px;">
-                                    @else
-                                        <span class="text-muted">Belum ada foto</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">
-                                    Tidak ada data penyembelihan untuk hewan Anda.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                    </table>
-            </div>
-            </div> 
+                                            <td>
+                                                @if ($row->dokumentasi_penyembelihan)
+                                                    <img src="{{ asset('storage/' . $row->dokumentasi_penyembelihan) }}"
+                                                        alt="Foto penyembelihan"
+                                                        style="width: 120px; border-radius: 8px;">
+                                                @else
+                                                    <span class="text-muted">Belum ada foto</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">
+                                                Tidak ada data penyembelihan untuk hewan Anda.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-            <div class="table-card" style="margin-bottom:1rem;">
-                <div style="padding:1rem 1.25rem;">
-                    <h3 class="form-title">Riwayat Distribusi Daging</h3>
-                    <p class="muted">Catatan distribusi daging kurban yang telah dilakukan.</p>
-                </div>
+                    <div class="table-card" style="margin-bottom:1rem;">
+                        <div style="padding:1rem 1.25rem;">
+                            <h3 class="form-title">Riwayat Distribusi Daging</h3>
+                            <p class="muted">Catatan distribusi daging kurban yang telah dilakukan.</p>
+                        </div>
 
-                <div class="table-responsive" style="padding:0 1.25rem 1.25rem;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tanggal</th>
-                                <th>Hewan Asal</th>
-                                <th>Penerima</th>
-                                <th class="hide-mobile">Status</th>
-                            </tr>
-                        </thead>
+                        <div class="table-responsive" style="padding:0 1.25rem 1.25rem;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Hewan Asal</th>
+                                        <th>Penerima</th>
+                                        <th class="hide-mobile">Status</th>
+                                    </tr>
+                                </thead>
 
-                        <tbody>
-                            @forelse ($distribusiDaging as $distribusi)
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($distribusi->Tanggal_Distribusi)->format('d M Y') }}
-                                    </td>
-                                    <td>{{ $distribusi->hewanKurban->Jenis_Hewan ?? 'N/A' }}</td>
-                                    <td>{{ $distribusi->penerimaKurban->Nama ?? $distribusi->Penerima }}</td>
-                                    <td class="hide-mobile">{{ $distribusi->Status_Distribusi }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" style="text-align: center; padding: 1rem;">Belum ada
-                                        riwayat distribusi daging.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                <tbody>
+                                    @forelse ($distribusiDaging as $distribusi)
+                                        <tr>
+                                            <td>{{ \Carbon\Carbon::parse($distribusi->Tanggal_Distribusi)->format('d M Y') }}
+                                            </td>
+                                            <td>{{ $distribusi->hewanKurban->Jenis_Hewan ?? 'N/A' }}</td>
+                                            <td>{{ $distribusi->penerimaKurban->Nama ?? $distribusi->Penerima }}</td>
+                                            <td class="hide-mobile">{{ $distribusi->Status_Distribusi }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; padding: 1rem;">Belum ada
+                                                riwayat distribusi daging.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-            <div class="card form-card">
-                <h3 class="form-title">Notifikasi Penting</h3>
-                <p class="muted">Informasi umum terkait status kurban Anda.</p>
-                <div class="stack" style="margin-top:0.5rem;">
-                    <ul class="muted">
-                        <li>⏳ Status pembayaran kurban Anda sedang diverifikasi.</li>
-                        <li>✔ Hewan kurban Kambing telah siap untuk disembelih.</li>
-                        <li>ℹ️ Mohon cek jadwal penyembelihan di tabel di atas.</li>
-                    </ul>
-                </div>
-            </div>
-            </section>
+                    <div class="card form-card">
+                        <h3 class="form-title">Notifikasi Penting</h3>
+                        <p class="muted">Informasi umum terkait status kurban Anda.</p>
+                        <div class="stack" style="margin-top:0.5rem;">
+                            <ul class="muted">
+                                <li>⏳ Status pembayaran kurban Anda sedang diverifikasi.</li>
+                                <li>✔ Hewan kurban Kambing telah siap untuk disembelih.</li>
+                                <li>ℹ️ Mohon cek jadwal penyembelihan di tabel di atas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
 
