@@ -19,6 +19,16 @@ class PelaksanaanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+
+    protected static ?string $navigationLabel = 'Pelaksanaan Kurban';
+
+  
+    protected static ?string $modelLabel = 'Pelaksanaan Kurban';
+
+  
+    protected static ?string $pluralModelLabel = 'Daftar Pelaksanaan Kurban';
+
+
     public static function form(Form $form): Form
     {
         return $form

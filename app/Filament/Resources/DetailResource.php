@@ -19,6 +19,13 @@ class DetailResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'Details Hewan Kurban';
+
+    protected static ?string $modelLabel = 'Detail Hewan';
+
+    protected static ?string $pluralModelLabel = 'Daftar Detail Hewan';
+
+
     public static function form(Form $form): Form
     {
         return $form

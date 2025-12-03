@@ -19,6 +19,14 @@ class KetersediaanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+
+    protected static ?string $navigationLabel = 'Jenis Hewan Kurban';
+
+    protected static ?string $modelLabel = 'Jenis Hewan';
+
+    protected static ?string $pluralModelLabel = 'Daftar Jenis Hewan';
+
+
     public static function form(Form $form): Form
     {
         return $form

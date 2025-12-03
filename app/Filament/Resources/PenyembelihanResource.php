@@ -22,6 +22,15 @@ class PenyembelihanResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-scissors';
     protected static ?string $navigationGroup = 'Manajemen Kurban';
 
+    protected static ?string $navigationLabel = 'Penyembelihan Kurban';
+
+  
+    protected static ?string $modelLabel = 'Penyembelihan';
+
+    
+    protected static ?string $pluralModelLabel = 'Daftar Penyembelihan';
+
+
     public static function form(Form $form): Form
     {
         return $form
