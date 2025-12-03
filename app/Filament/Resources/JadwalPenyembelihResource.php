@@ -19,6 +19,16 @@ class JadwalPenyembelihResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+
+    protected static ?string $navigationLabel = 'Jadwal Penyembelih Kurban';
+
+
+    protected static ?string $modelLabel = 'Jadwal Penyembelih';
+
+    protected static ?string $pluralModelLabel = 'Daftar Jadwal Penyembelih';
+
+
+
     public static function form(Form $form): Form
     {
         return $form
