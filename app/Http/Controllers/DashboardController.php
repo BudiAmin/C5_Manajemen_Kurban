@@ -31,8 +31,15 @@ class DashboardController extends Controller
         //     ->orderBy('Jenis_Hewan', 'asc')
         //     ->get();
 
+        // jenis hewan 
+        $hewanKurban = HewanKurban::with('detail.ketersediaan')->get();
+
         // pilih hewan kurban
         $detail_hewan = Detail::with('ketersediaan:id,Jenis_Hewan')->get();
+
+        $detailPembayaran = HewanKurban::where('ID_User', $userId)
+            ->with('user') // kalau ingin eager load user
+            ->get();
 
 
         // Pelaksanaan Kurban
@@ -65,6 +72,8 @@ class DashboardController extends Controller
             'pelaksanaanKurban' => $pelaksanaanKurban,
             'penyembelihan' => $penyembelihan,
             'detail_hewan' => $detail_hewan,
+            'detailPembayaran' => $detailPembayaran,
+            'hewanKurban' => $hewanKurban,
         ]);
     }
 }

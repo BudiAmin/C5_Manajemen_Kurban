@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('Titip_bayar', 50)->nullable();
             $table->integer('Total_Hewan')->nullable();
             $table->integer('Total_Harga')->nullable();
+            $table->string('Status')->default('Pending');
+            $table->string('Bukti_Bayar')->nullable();
 
             $table->timestamps();
 
