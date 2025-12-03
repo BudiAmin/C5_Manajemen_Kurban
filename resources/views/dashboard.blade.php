@@ -274,7 +274,7 @@
                                         <tr>
                                             <td>{{ $row->hewan->user->name ?? '-' }}</td>
 
-                                            <td>{{ $row->hewan->Jenis_Hewan ?? '-' }}</td>
+                                            <td>{{ $row->hewan->detail->ketersediaan->Jenis_Hewan ?? '-' }}</td>
 
                                             <td>{{ $row->hewan->Status_Hewan ?? '-' }}</td>
 

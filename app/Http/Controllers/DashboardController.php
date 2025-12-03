@@ -20,9 +20,9 @@ class DashboardController extends Controller
         $userId = auth()->id();
 
         $penyembelihan = Penyembelihan::whereHas('hewan', function ($q) use ($userId) {
-            $q->where('id_user', $userId);
+            $q->where('ID_User', $userId);
         })
-            ->with(['hewan.user'])
+            ->with(['hewan.user', 'hewan.detail.ketersediaan'])
             ->get();
 
         // 1. Data Pilihan Hewan Kurban untuk Pendaftaran
