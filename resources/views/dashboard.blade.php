@@ -70,64 +70,77 @@
                 <aside>
 
                     {{-- form tambah peserta --}}
-                    <div class="card form-card stack" style="margin-bottom:1.25rem;">
-                        <div>
-                            <h3 class="form-title">Pendaftaran Kurban</h3>
-                            <p class="muted">Pilih hewan kurban Anda dari daftar yang tersedia.</p>
-                        </div>
-
-                        <form method="POST" action="{{ route('kurban.store') }}" class="stack">
-                            @csrf
-                            <div class="form-group">
-                                <label for="jenis_hewan">Pilih Hewan Kurban</label>
-                                <select class="input" id="jenis_hewan" name="ID_Detail">
-                                    @forelse ($detail_hewan as $pilihan)
-                                        <option value="{{ $pilihan->id }}" data-harga="{{ $pilihan->Harga }}">
-                                            {{ $pilihan->ketersediaan->Jenis_Hewan }}
-                                            {{-- Kolom harga/deskripsi tidak ada, hanya tampilkan Jenis_Hewan --}}
-                                        </option>
-                                    @empty
-                                        <option disabled>Hewan kurban tidak tersedia saat ini.</option>
-                                    @endforelse
-                                </select>
-                                @if ($detail_hewan->isEmpty())
-                                    <p class="muted" style="margin-top:0.5rem; color: var(--color-red);">Tidak ada
-                                        hewan yang bisa didaftarkan.</p>
-                                @endif
+                    @if ($isOpen)
+                        <div class="card form-card stack" style="margin-bottom:1.25rem;">
+                            <div>
+                                <h3 class="form-title">Pendaftaran Kurban</h3>
+                                <p class="muted">Pilih hewan kurban Anda dari daftar yang tersedia.</p>
                             </div>
 
-                            {{-- <div class="form-group">
+                            <form method="POST" action="{{ route('kurban.store') }}" class="stack">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="jenis_hewan">Pilih Hewan Kurban</label>
+                                    <select class="input" id="jenis_hewan" name="ID_Detail">
+                                        @forelse ($detail_hewan as $pilihan)
+                                            <option value="{{ $pilihan->id }}" data-harga="{{ $pilihan->Harga }}">
+                                                {{ $pilihan->ketersediaan->Jenis_Hewan }}
+                                                {{-- Kolom harga/deskripsi tidak ada, hanya tampilkan Jenis_Hewan --}}
+                                            </option>
+                                        @empty
+                                            <option disabled>Hewan kurban tidak tersedia saat ini.</option>
+                                        @endforelse
+                                    </select>
+                                    @if ($detail_hewan->isEmpty())
+                                        <p class="muted" style="margin-top:0.5rem; color: var(--color-red);">Tidak ada
+                                            hewan yang bisa didaftarkan.</p>
+                                    @endif
+                                </div>
+
+                                {{-- <div class="form-group">
                                 <label>Jumlah / Patungan</label>
                                 <input class="input" type="number" min="1" value="1"
                                     name="jumlah_patungan">
                             </div> --}}
 
-                            <div class="form-group">
-                                <label>Jumlah Hewan</label>
-                                <input class="input" type="number" min="1" value="1"
-                                    name="jumlah_patungan">
-                            </div>
+                                <div class="form-group">
+                                    <label>Jumlah Hewan</label>
+                                    <input class="input" type="number" min="1" value="1"
+                                        name="jumlah_patungan">
+                                </div>
 
-                            <div class="form-group">
-                                <label>Menitip Bayar</label>
-                                <select class="input" name="titip_bayar">
-                                    <option value="tidak">Tidak</option>
-                                    <option value="ya">Ya</option>
-                                </select>
-                            </div>
+                                <div class="form-group">
+                                    <label>Menitip Bayar</label>
+                                    <select class="input" name="titip_bayar">
+                                        <option value="tidak">Tidak</option>
+                                        <option value="ya">Ya</option>
+                                    </select>
+                                </div>
 
-                            {{-- jumlah yang harus dibayar (harga hewan dari table details -> Harga dikali jumlah hewan) --}}
-                            <div class="form-group">
-                                <label>Total yang harus dibayar</label>
-                                <input class="input" id="total_bayar" name="total_bayar" type="text" readonly>
-                            </div>
+                                {{-- jumlah yang harus dibayar (harga hewan dari table details -> Harga dikali jumlah hewan) --}}
+                                <div class="form-group">
+                                    <label>Total yang harus dibayar</label>
+                                    <input class="input" id="total_bayar" name="total_bayar" type="text" readonly>
+                                </div>
 
-                            <div class="actions">
-                                <button type="submit" class="btn btn-gold">Daftar Sekarang</button>
-                                <button type="reset" class="btn btn-outline">Reset</button>
-                            </div>
-                        </form>
-                    </div>
+                                <div class="actions">
+                                    <button type="submit" class="btn btn-gold">Daftar Sekarang</button>
+                                    <button type="reset" class="btn btn-outline">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    @else
+                        <div class="card form-card" style="padding:1.5rem; margin-bottom:1.25rem;">
+                            <h1 class="form-title" style="color:red;">Pendaftaran Belum Dibuka / Sudah Ditutup!</h1>
+                            <br>
+                            <p class="muted">
+                                Pendaftaran dibuka dari
+                                <strong>{{ \Carbon\Carbon::parse($pelaksanaan->Tanggal_Pendaftaran)->format('d M Y') }}</strong>
+                                hingga
+                                <strong>{{ \Carbon\Carbon::parse($pelaksanaan->Tanggal_Penutupan)->format('d M Y') }}</strong>
+                            </p>
+                        </div>
+                    @endif
 
                     {{-- penerima kurban --}}
                     <div class="card form-card">
@@ -240,8 +253,8 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="text-center text-muted">
-                                                Tidak ada data penyembelihan untuk hewan Anda.
+                                            <td colspan="6" class="text-center text-muted">
+                                                Tidak ada riwayat transaksi.
                                             </td>
                                         </tr>
                                     @endforelse

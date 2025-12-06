@@ -64,6 +64,16 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
+        // form pendaftaran kurban
+        $pelaksanaan = Pelaksanaan::first(); // atau where('id', $id), sesuaikan
+
+        $today = Carbon::today();
+
+        $isOpen = $today->between(
+            Carbon::parse($pelaksanaan->Tanggal_Pendaftaran),
+            Carbon::parse($pelaksanaan->Tanggal_Penutupan)
+        );
+
         return view('dashboard', [
             // 'pilihanKurban' => $pilihanKurban,
             'jadwalPenyembelihans' => $jadwalPenyembelihans,
@@ -74,11 +84,14 @@ class DashboardController extends Controller
             'detail_hewan' => $detail_hewan,
             'detailPembayaran' => $detailPembayaran,
             'hewanKurban' => $hewanKurban,
+            'detail_hewan' => $detail_hewan,
+            'isOpen' => $isOpen,
+            'pelaksanaan' => $pelaksanaan
         ]);
     }
 
-    
-        // bayar kurban
+
+    // bayar kurban
     public function updateBukti(Request $request, $id)
     {
         $request->validate([
