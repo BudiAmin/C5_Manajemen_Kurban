@@ -43,9 +43,7 @@ class DashboardController extends Controller
 
 
         // Pelaksanaan Kurban
-        $pelaksanaanKurban = Pelaksanaan::orderBy('id', 'asc')
-            ->limit(5)
-            ->get();
+        $pelaksanaanKurban = Pelaksanaan::latest('id')->take(1)->get();
 
 
         // 2. Data Jadwal Penyembelihan
@@ -65,7 +63,7 @@ class DashboardController extends Controller
             ->get();
 
         // form pendaftaran kurban
-        $pelaksanaan = Pelaksanaan::first(); // atau where('id', $id), sesuaikan
+        $pelaksanaan = Pelaksanaan::latest('id')->first();
 
         $today = Carbon::today();
 
