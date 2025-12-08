@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenyembelihanResource\Pages;
-use App\Models\Penyembelihan;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\HewanKurban;
+use App\Models\Penyembelihan;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
+use App\Filament\Resources\PenyembelihanResource\Pages;
 
 class PenyembelihanResource extends Resource
 {
@@ -39,11 +40,16 @@ class PenyembelihanResource extends Resource
                 //     ->label('Pemilik Hewan')
                 //     ->default('-'),
 
-                // Di Form Field
                 Select::make('id_hewan')
-                    ->label('Pemilik Hewan')
-                    ->relationship('pemilik', 'name')
+                    ->label('Hewan (Nama Pemilik)')
+                    ->options(function () {
+                        return HewanKurban::with('user') 
+                            ->get()
+                            ->pluck('user.name', 'ID_Hewan');
+                    })
                     ->required(),
+
+
 
 
                 Select::make('id_pelaksanaan')
@@ -74,7 +80,7 @@ class PenyembelihanResource extends Resource
         return $table
             ->columns([
 
-                TextColumn::make('hewan.Jenis_Hewan')
+                TextColumn::make('hewan.detail.ketersediaan.Jenis_Hewan')
                     ->label('Jenis Hewan')
                     ->sortable()
                     ->searchable(),

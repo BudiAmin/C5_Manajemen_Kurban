@@ -25,6 +25,12 @@ Route::get('/daftar-kurban', [KurbanRegistrationController::class, 'create'])->n
 Route::post('/daftar-kurban', [KurbanRegistrationController::class, 'store'])->name('kurban.store');
 Route::get('/daftar-kurban/lanjut', [KurbanRegistrationController::class, 'next'])->name('kurban.next');
 
+// bayar
+Route::put('/hewan-kurban/{id}/update-bukti', [DashboardController::class, 'updateBukti'])
+    ->name('hewan_kurban.update_bukti')
+    ->middleware('auth');
+
+
 // Ganti rute dashboard
 Route::get('/dashboard', [DashboardController::class, 'index']) // Gunakan DashboardController
     ->middleware(['auth', 'verified'])

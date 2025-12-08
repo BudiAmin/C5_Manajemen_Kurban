@@ -20,9 +20,9 @@ class DashboardController extends Controller
         $userId = auth()->id();
 
         $penyembelihan = Penyembelihan::whereHas('hewan', function ($q) use ($userId) {
-            $q->where('id_user', $userId);
+            $q->where('ID_User', $userId);
         })
-            ->with(['hewan.user'])
+            ->with(['hewan.user', 'hewan.detail.ketersediaan'])
             ->get();
 
         // 1. Data Pilihan Hewan Kurban untuk Pendaftaran
@@ -31,14 +31,19 @@ class DashboardController extends Controller
         //     ->orderBy('Jenis_Hewan', 'asc')
         //     ->get();
 
+        // jenis hewan 
+        $hewanKurban = HewanKurban::with('detail.ketersediaan')->get();
+
         // pilih hewan kurban
         $detail_hewan = Detail::with('ketersediaan:id,Jenis_Hewan')->get();
 
+        $detailPembayaran = HewanKurban::where('ID_User', $userId)
+            ->with('user') // kalau ingin eager load user
+            ->get();
+
 
         // Pelaksanaan Kurban
-        $pelaksanaanKurban = Pelaksanaan::orderBy('id', 'asc')
-            ->limit(5)
-            ->get();
+        $pelaksanaanKurban = Pelaksanaan::latest('id')->take(1)->get();
 
 
         // 2. Data Jadwal Penyembelihan
@@ -57,6 +62,16 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
+        // form pendaftaran kurban
+        $pelaksanaan = Pelaksanaan::latest('id')->first();
+
+        $today = Carbon::today();
+
+        $isOpen = $today->between(
+            Carbon::parse($pelaksanaan->Tanggal_Pendaftaran),
+            Carbon::parse($pelaksanaan->Tanggal_Penutupan)
+        );
+
         return view('dashboard', [
             // 'pilihanKurban' => $pilihanKurban,
             'jadwalPenyembelihans' => $jadwalPenyembelihans,
@@ -65,6 +80,39 @@ class DashboardController extends Controller
             'pelaksanaanKurban' => $pelaksanaanKurban,
             'penyembelihan' => $penyembelihan,
             'detail_hewan' => $detail_hewan,
+            'detailPembayaran' => $detailPembayaran,
+            'hewanKurban' => $hewanKurban,
+            'detail_hewan' => $detail_hewan,
+            'isOpen' => $isOpen,
+            'pelaksanaan' => $pelaksanaan
         ]);
+    }
+
+
+    // bayar kurban
+    public function updateBukti(Request $request, $id)
+    {
+        $request->validate([
+            'Bukti_Bayar' => 'required|image|max:2048',
+        ]);
+
+        $hewan = HewanKurban::where('ID_Hewan', $id)
+            ->where('ID_User', Auth::id()) // pastikan milik user login
+            ->firstOrFail();
+
+        if ($request->hasFile('Bukti_Bayar')) {
+            $file = $request->file('Bukti_Bayar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/pembayaran', $filename);
+
+            $hewan->Bukti_Bayar = $filename;
+
+            // Set status otomatis
+            $hewan->Status = 'Menunggu Verifikasi';
+
+            $hewan->save();
+        }
+
+        return back()->with('success', 'Bukti pembayaran berhasil diupload dan status diubah menjadi Menunggu Verifikasi.');
     }
 }
