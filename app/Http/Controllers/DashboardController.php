@@ -56,6 +56,7 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
+            // add komentar
         // 4. Data Distribusi Daging
         $distribusiDaging = DistribusiDaging::with(['hewanKurban', 'penerimaKurban'])
             ->orderBy('Tanggal_Distribusi', 'desc')
